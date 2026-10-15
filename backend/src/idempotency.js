@@ -21,7 +21,12 @@ function once(q, r, action, payload, fn) {
     if (x.s < 300) db.prepare('INSERT INTO idem(k,hash,status,response) VALUES(?,?,?,?)').run(k, h, x.s, JSON.stringify(x.b));
     return x;
   })();
-  const lost = sim.drop > 0 && o.s < 300 && !o.replay;
+  const lost =
+  sim.drop > 0 &&
+  o.s < 300 &&
+  !o.replay &&
+  action !== 'ARM FAILURE SIMULATION' &&
+  action !== 'RESET DEMO DATA';
   L(q.user.username, action, raw, lost ? 'SAVED — response lost' : o.replay ? 'REPLAYED stored response' : o.s < 300 ? 'PROCESSED' : 'REJECTED ' + o.s);
   if (lost) { sim.drop--; return q.socket.destroy(); } // diagnostics demo: work committed, connection dies before reply
   r.status(o.s).json(o.b);
