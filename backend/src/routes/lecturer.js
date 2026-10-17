@@ -32,7 +32,7 @@ router.put('/api/submissions/:id/grade', A('lecturer'), W((q, r) => {
     const s = db.prepare('SELECT s.*,c.course_code,c.title FROM submissions s JOIN content c ON c.id=s.content_id WHERE s.id=?').get(q.params.id);
     if (!s || !own(q.user, s.course_code)) return { s: 403, b: { message: 'Not your course' } };
     const g = +q.body.grade; if (!(g >= 0 && g <= 100)) return { s: 400, b: { message: 'Grade must be 0–100' } };
-    db.prepare('UPDATE submissions SET grade=?,feedback=? WHERE id=?').run(g, q.body.feedback || '', s.id); notify(s.student_id, `📝 "${s.title}" was marked: ${g}/100.`); return { s: 200, b: { message: 'Saved' } };
+    db.prepare('UPDATE submissions SET grade=?,feedback=? WHERE id=?').run(g, q.body.feedback || '', s.id); notify(s.student_id, `"${s.title}" was marked: ${g}/100.`); return { s: 200, b: { message: 'Saved' } };
   });
 }));
 

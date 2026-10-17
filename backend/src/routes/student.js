@@ -36,7 +36,7 @@ router.post('/api/assignments/:id/submit', A('student'), W((q, r) => {
     if (db.prepare('SELECT 1 FROM submissions WHERE content_id=? AND student_id=?').get(id, sid)) return { s: 409, b: { message: 'You have already submitted this assignment.' } };
     const ref = 'SUB-' + crypto.randomBytes(3).toString('hex').toUpperCase();
     db.prepare('INSERT INTO submissions(content_id,student_id,text,ref) VALUES(?,?,?,?)').run(id, sid, text, ref);
-    notify(sid, `✅ Your assignment "${a.title}" was submitted successfully. Reference ${ref}.`); // inside the same transaction → sent exactly once
+    notify(sid, `Your assignment "${a.title}" was submitted successfully. Reference ${ref}.`); // inside the same transaction → sent exactly once
     return { s: 201, b: { message: 'Assignment submitted successfully.', ref } };
   });
 }));
